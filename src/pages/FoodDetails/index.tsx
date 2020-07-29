@@ -99,11 +99,37 @@ const FoodDetails: React.FC = () => {
   }, [routeParams]);
 
   function handleIncrementExtra(id: number): void {
-    // Increment extra quantity
+    const extraIndex = extras.findIndex(e => e.id === id);
+
+    if (extraIndex < 0) {
+      return;
+    }
+
+    setExtras(previousExtras => {
+      const updatedExtras = [...previousExtras];
+
+      updatedExtras[extraIndex].quantity += 1;
+
+      return updatedExtras;
+    });
   }
 
   function handleDecrementExtra(id: number): void {
-    // Decrement extra quantity
+    const extraIndex = extras.findIndex(e => e.id === id);
+
+    if (extraIndex < 0) {
+      return;
+    }
+
+    setExtras(previousExtras => {
+      const updatedExtras = [...previousExtras];
+
+      if (updatedExtras[extraIndex].quantity > 0) {
+        updatedExtras[extraIndex].quantity -= 1;
+      }
+
+      return updatedExtras;
+    });
   }
 
   function handleIncrementFood(): void {
