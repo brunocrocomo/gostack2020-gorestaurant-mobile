@@ -73,7 +73,26 @@ const FoodDetails: React.FC = () => {
 
   useEffect(() => {
     async function loadFood(): Promise<void> {
-      // Load a specific food with extras based on routeParams id
+      const { id } = routeParams;
+
+      const { data: foodDetails } = await api.get<Food>(`foods/${id}`);
+
+      const formattedFoodDetails = {
+        ...foodDetails,
+        formattedPrice: formatValue(foodDetails.price),
+      };
+      setFood(formattedFoodDetails);
+
+      const formattedExtras = foodDetails.extras.map(extra => ({
+        ...extra,
+        quantity: 0,
+      }));
+      setExtras(formattedExtras);
+
+      const { data: favorites } = await api.get<Food[]>('favorites');
+
+      const checkFavorite = favorites.find(f => f.id === id);
+      setIsFavorite(!!checkFavorite);
     }
 
     loadFood();
@@ -100,7 +119,14 @@ const FoodDetails: React.FC = () => {
   }, [isFavorite, food]);
 
   const cartTotal = useMemo(() => {
-    // Calculate cartTotal
+    const extrasTotal = extras.reduce(
+      (accumulator, extra) => accumulator + extra.value * extra.quantity,
+      0,
+    );
+
+    const total = (food.price + extrasTotal) * foodQuantity;
+
+    return formatValue(total);
   }, [extras, food, foodQuantity]);
 
   async function handleFinishOrder(): Promise<void> {
