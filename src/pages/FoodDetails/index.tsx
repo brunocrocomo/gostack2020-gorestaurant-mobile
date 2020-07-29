@@ -111,7 +111,12 @@ const FoodDetails: React.FC = () => {
   }
 
   function handleDecrementFood(): void {
-    setFoodQuantity(previousFoodQuantity => previousFoodQuantity - 1);
+    setFoodQuantity(previousFoodQuantity => {
+      if (previousFoodQuantity > 1) {
+        return previousFoodQuantity - 1;
+      }
+      return previousFoodQuantity;
+    });
   }
 
   const toggleFavorite = useCallback(() => {
